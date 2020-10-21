@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using DealerPortalAPI.Models;
 
 namespace DealerPortalAPI.Controllers
@@ -14,10 +16,12 @@ namespace DealerPortalAPI.Controllers
     public class DealerUsersController : ControllerBase
     {
         private readonly DealerPortalContext _context;
+        private readonly IConfiguration _configuration;
 
-        public DealerUsersController(DealerPortalContext context)
+        public DealerUsersController(DealerPortalContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: api/DealerUsers
@@ -27,7 +31,7 @@ namespace DealerPortalAPI.Controllers
             return await _context.DealerUser.ToListAsync();
         }
 
-        // GET: api/DealerUsers/5
+        // GET: api/DealerUsers/id
         [HttpGet("{id}")]
         public async Task<ActionResult<DealerUser>> GetDealerUser(int id)
         {
@@ -37,6 +41,7 @@ namespace DealerPortalAPI.Controllers
             {
                 return NotFound();
             }
+            dealerUser.Password = null;
 
             return dealerUser;
         }
@@ -52,6 +57,10 @@ namespace DealerPortalAPI.Controllers
                 return BadRequest();
             }
 
+            if (string.IsNullOrWhiteSpace(dealerUser.Password))
+            {
+                dealerUser.Password = await _context.DealerUser.Where(x => x.DealerUserId == id).Select(y => y.Password).FirstOrDefaultAsync();
+            }
             _context.Entry(dealerUser).State = EntityState.Modified;
 
             try
@@ -81,6 +90,26 @@ namespace DealerPortalAPI.Controllers
         {
             _context.DealerUser.Add(dealerUser);
             await _context.SaveChangesAsync();
+
+            string subject = "Dealer Portal Registration";
+            string url = _configuration.GetValue<string>("AppSettings:RegisterUrl") + dealerUser.DealerUserId;
+            string body = "You have been registered to use the Dealer Portal.<br/><br/><a href='" + url + "'>Click here</a> to complete your registration.";
+
+            var emessage = new MailMessage("postmaster@allseating.com", dealerUser.Email, subject, body)
+            {
+                IsBodyHtml = true
+            };
+            emessage.Bcc.Add("admin@allseating.com");
+            using SmtpClient SmtpMail = new SmtpClient("allfs90.allseating.com", 25)
+            {
+                UseDefaultCredentials = true
+            };
+            try
+            {
+                SmtpMail.Send(emessage);
+                emessage.Dispose();
+            }
+            catch { }
 
             return CreatedAtAction("GetDealerUser", new { id = dealerUser.DealerUserId }, dealerUser);
         }

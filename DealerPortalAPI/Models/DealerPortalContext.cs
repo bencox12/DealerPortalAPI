@@ -25,15 +25,17 @@ namespace DealerPortalAPI.Models
             {
                 entity.Property(e => e.DealerUserId).HasColumnName("DealerUserID");
 
-                entity.Property(e => e.Email).HasMaxLength(100);
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Permissions)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Password).HasMaxLength(50);
+
+                entity.Property(e => e.Permissions).HasMaxLength(50);
 
                 entity.Property(e => e.SysproDealerId)
                     .IsRequired()
