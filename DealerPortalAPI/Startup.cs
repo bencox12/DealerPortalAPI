@@ -40,6 +40,9 @@ namespace DealerPortalAPI
             services.AddControllers();
 
             services.AddDbContext<DealerPortalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DealerPortalDatabase")));
+            services.AddDbContext<AllInNewContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AllInDatabase")));
+            services.AddDbContext<LabelsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PieceRateDatabase")));
+            services.AddDbContext<SysproCompanyAContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SysproDatabase")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
