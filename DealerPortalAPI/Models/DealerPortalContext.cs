@@ -17,6 +17,7 @@ namespace DealerPortalAPI.Models
 
         public virtual DbSet<DealerUser> DealerUser { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }
+        public virtual DbSet<Resource> Resource { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,6 +63,21 @@ namespace DealerPortalAPI.Models
                 entity.Property(e => e.PermissionType)
                     .IsRequired()
                     .HasMaxLength(10);
+            });
+
+            modelBuilder.Entity<Resource>(entity =>
+            {
+                entity.Property(e => e.ResourceId).HasColumnName("ResourceID");
+
+                entity.Property(e => e.Filename).HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<UserRole>(entity =>
