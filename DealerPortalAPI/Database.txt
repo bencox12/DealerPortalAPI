@@ -1,4 +1,4 @@
 ﻿Scaffold-DbContext "Server=allfs800;Database=DealerPortal;UID=appsrvtest;PWD=Nagasaki10!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Force
-Scaffold-DbContext "Server=allfs800;Database=AllInNew;UID=appsrvtest;PWD=Nagasaki10!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables OrderMaster -Force
+Scaffold-DbContext "Server=allfs800;Database=AllInNew;UID=appsrvtest;PWD=Nagasaki10!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables OrderMaster,OrderStatus -Force
 Scaffold-DbContext "Server=allrs;Database=Labels;UID=appsrvprod;PWD=Fukiyama20!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables ShipMaster,ShipDetails -Force
 Scaffold-DbContext "Server=ALLFSSYSPRO;Database=SysproCompanyA;UID=appsrvread;PWD=Fatman30!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables SorMaster,SorDetail,WipMaster,ArInvoice -Force

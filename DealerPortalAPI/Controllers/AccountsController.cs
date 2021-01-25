@@ -25,13 +25,13 @@ namespace DealerPortalAPI.Controllers
         }
 
         // GET: api/DealerUsers/id
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DealerUser>> GetAccount(string id)
+        [HttpGet("{dealerid}/{id}")]
+        public async Task<ActionResult<DealerUser>> GetAccount(string dealerid, string id)
         {
-            DealerUser dealerUser = await _context.DealerUser.Where(x => x.Email == id && x.IsActive).FirstOrDefaultAsync();
+            DealerUser dealerUser = await _context.DealerUser.Where(x => x.SysproDealerId == dealerid && x.Email == id && x.IsActive).FirstOrDefaultAsync();
             if (dealerUser == null)
             {
-                dealerUser = await _context.DealerUser.Where(x => x.Name == id && x.IsActive).FirstOrDefaultAsync();
+                dealerUser = await _context.DealerUser.Where(x => x.SysproDealerId == dealerid && x.Name == id && x.IsActive).FirstOrDefaultAsync();
             }
 
             if (dealerUser == null)

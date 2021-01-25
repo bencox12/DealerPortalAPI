@@ -19,6 +19,7 @@ namespace DealerPortal.Models
         public string DeliveryDate { get; set; }
         public string InvoiceNumber { get; set; }
         public string TrackingNumber { get; set; }
+        public List<string> AllInStatuses { get; set; }
         public string Status { get; set; }
         public OrderSearch OrderSearch { get; set; }
         public string Message { get; set; }
@@ -39,8 +40,8 @@ namespace DealerPortal.Models
     {
         public string OrderNumber { get; set; }
         public string CustomerPo { get; set; }
-        public string ReceivedDate { get; set; }
-        public string ShippedDate { get; set; }
+        public Nullable<DateTime> ReceivedDate { get; set; }
+        public Nullable<DateTime> ShippedDate { get; set; }
         public string Status { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace DealerPortalAPI.Models
         }
 
         public virtual DbSet<OrderMaster> OrderMaster { get; set; }
+        public virtual DbSet<OrderStatus> OrderStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -260,6 +261,36 @@ namespace DealerPortalAPI.Models
                 entity.Property(e => e.TxmasAdmin).HasColumnType("decimal(10, 2)");
 
                 entity.Property(e => e.TxmasRebate).HasColumnType("decimal(10, 2)");
+            });
+
+            modelBuilder.Entity<OrderStatus>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Dept)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Note)
+                    .HasMaxLength(5000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ponum).HasColumnName("PONum");
+
+                entity.Property(e => e.Postatus).HasColumnName("POStatus");
+
+                entity.Property(e => e.RowVersion)
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -48,12 +48,12 @@ namespace DealerPortalAPI.Controllers
 
         private async Task<OrderModel> OrderDetails(string id, string text)
         {
-            OrderModel orderModel = new OrderModel();
+            OrderModel orderModel = new OrderModel() { OrderStatus = "", Status = "", AllInStatuses = new List<string>() };
             SorMaster sorMaster = await _syspro.SorMaster.Where(x => x.Customer == id && x.CustomerPoNumber == text).Include("SorDetail").FirstOrDefaultAsync();
+            OrderMaster orderMaster = await _allin.OrderMaster.Where(x => x.DealerCode == id && x.CustomerPo == text).FirstOrDefaultAsync();
 
             if (sorMaster == null)
             {
-                OrderMaster orderMaster = await _allin.OrderMaster.Where(x => x.DealerCode == id && x.CustomerPo == text).FirstOrDefaultAsync();
                 if (orderMaster == null)
                 {
                     orderModel.Message = "Order not found";
@@ -61,6 +61,7 @@ namespace DealerPortalAPI.Controllers
                 else
                 {
                     orderModel.Status = "Received";
+                    orderModel.OrderStatus = "In Order Entry";
                     orderModel.ReceiveDate = orderMaster.EntryDate.ToShortDateString();
                     orderModel.SalesOrder = "N/A";
                     orderModel.DeliveryDate = "N/A";
@@ -68,32 +69,40 @@ namespace DealerPortalAPI.Controllers
                     {
                         orderModel.DeliveryDate = orderMaster.ShipDate.Value.ToShortDateString();
                     }
-                    switch (orderMaster.Status)
+                    List<OrderStatus> orderStatuses = await _allin.OrderStatus.Where(x => x.Ponum == orderMaster.Ponum && x.EndDate == null).ToListAsync();
+                    foreach (var item in orderStatuses)
                     {
-                        case 5:
-                            orderModel.OrderStatus = "Waiting for Order Corrections";
-                            break;
-                        case 11:
-                        case 13:
-                            orderModel.OrderStatus = "In Credit Review";
-                            break;
-                        case 18:
-                            orderModel.OrderStatus = "Waiting for SQ/SPR";
-                            break;
-                        case 22:
-                            orderModel.OrderStatus = "Waiting for GPO";
-                            break;
-                        case 28:
-                            orderModel.OrderStatus = "Waiting for Sales Support";
-                            break;
-                        default:
-                            orderModel.OrderStatus = "In Order Entry";
-                            break;
+                        switch (item.Dept)
+                        {
+                            case "Order Correction":
+                                orderModel.AllInStatuses.Add("Waiting for Order Corrections - " + item.StartDate.Value.ToShortDateString());
+                                break;
+                            case "Credit":
+                                orderModel.AllInStatuses.Add("In Credit Review - " + item.StartDate.Value.ToShortDateString());
+                                break;
+                            case "SQSPR Requests":
+                                orderModel.AllInStatuses.Add("Waiting for SQ/SPR - " + item.StartDate.Value.ToShortDateString());
+                                break;
+                            case "GPO Requests":
+                                orderModel.AllInStatuses.Add("Waiting for GPO - " + item.StartDate.Value.ToShortDateString());
+                                break;
+                            case "Sales Support":
+                                orderModel.AllInStatuses.Add("Waiting for Sales Support - " + item.StartDate.Value.ToShortDateString());
+                                break;
+                        }
                     }
                 }
             }
             else
             {
+                if (orderMaster != null)
+                {
+                    orderModel.ReceiveDate = orderMaster.EntryDate.ToShortDateString();
+                }
+                else
+                {
+                    orderModel.ReceiveDate = sorMaster.EntrySystemDate.Value.ToShortDateString();
+                }
                 orderModel.ProductionDate = "N/A";
                 orderModel.ShipDate = "N/A";
                 orderModel.DeliveryDate = "N/A";
@@ -112,6 +121,11 @@ namespace DealerPortalAPI.Controllers
                             orderModel.ShipDate = shipMaster.DateStamp.Value.ToShortDateString();
                         }
                     }
+                    else
+                    {
+                        if (DateTime.Now > wipMaster.JobDeliveryDate.Value)
+                            orderModel.ShipDate = wipMaster.JobDeliveryDate.Value.ToShortDateString();
+                    }
                     ArInvoice arInvoice = await _syspro.ArInvoice.Where(x => x.SalesOrder == sorMaster.SalesOrder).FirstOrDefaultAsync();
                     if (arInvoice != null)
                     {
@@ -124,6 +138,11 @@ namespace DealerPortalAPI.Controllers
                 {
                     orderModel.DeliveryDate = sorMaster.ReqShipDate.Value.ToShortDateString();
                 }
+                else
+                {
+                    orderModel.OrderStatus = "Being Scheduled";
+                    orderModel.Status = "InScheduling";
+                }
                 switch (sorMaster.OrderStatus)
                 {
                     case "4":
@@ -133,20 +152,18 @@ namespace DealerPortalAPI.Controllers
                     case "9":
                         orderModel.OrderStatus = "Shipped";
                         orderModel.Status = "Shipped";
+                        orderModel.TrackingNumber = sorMaster.SpecialInstrs;
                         break;
                     case "*":
                     case "\\":
+                        orderModel.ShipDate = "N/A";
                         break;
                     default:
-                        if (orderModel.ShipDate == "N/A")
+                        orderModel.ShipDate = "N/A";
+                        if (orderModel.OrderStatus == "")
                         {
                             orderModel.OrderStatus = "In Production";
                             orderModel.Status = "InProduction";
-                        }
-                        else
-                        {
-                            orderModel.OrderStatus = "Shipped";
-                            orderModel.Status = "Shipped";
                         }
                         break;
                 }
@@ -159,68 +176,95 @@ namespace DealerPortalAPI.Controllers
         {
             string[] option = text.Split('~');
             OrderSearch orderSearch = new OrderSearch() { SearchDetails = new List<SearchDetail>() };
-            List<SorMaster> sorMaster = new List<SorMaster>();
+            OrderMaster orderMaster = null;
+            List<OrderMaster> orderMasters = new List<OrderMaster>();
+            List<SorMaster> sorMasters = new List<SorMaster>();
             if (!string.IsNullOrWhiteSpace(option[0]))
             {
                 option[0] = option[0].PadLeft(15, '0');
-                sorMaster = await _syspro.SorMaster.Where(x => x.Customer == id && x.SalesOrder == option[0]).ToListAsync();
+                sorMasters = await _syspro.SorMaster.Where(x => x.Customer == id && x.SalesOrder == option[0]).ToListAsync();
             }
             else if (!string.IsNullOrWhiteSpace(option[1]))
             {
-                sorMaster = await _syspro.SorMaster.Where(x => x.Customer == id && x.CustomerPoNumber == option[1]).ToListAsync();
+                sorMasters = await _syspro.SorMaster.Where(x => x.Customer == id && x.CustomerPoNumber == option[1]).ToListAsync();
+                orderMasters = await _allin.OrderMaster.Where(x => x.DealerCode == id && x.CustomerPo == option[1]).ToListAsync();
             }
             else if (!string.IsNullOrWhiteSpace(option[2]))
             {
-                sorMaster = await _syspro.SorMaster.Where(x => x.Customer == id && x.CustomerName == option[2]).ToListAsync();
+                sorMasters = await _syspro.SorMaster.Where(x => x.Customer == id && x.CustomerName == option[2]).ToListAsync();
             }
             else if (!string.IsNullOrWhiteSpace(option[3]) && !string.IsNullOrWhiteSpace(option[4]))
             {
                 DateTime fromDate = Convert.ToDateTime(option[3].Replace("-", "/"));
                 DateTime toDate = Convert.ToDateTime(option[4].Replace("-", "/"));
-                sorMaster = await _syspro.SorMaster.Where(x => x.Customer == id && x.OrderDate >= fromDate && x.OrderDate <= toDate).ToListAsync();
+                sorMasters = await _syspro.SorMaster.Where(x => x.Customer == id && x.OrderDate >= fromDate && x.OrderDate <= toDate).ToListAsync();
+                orderMasters = await _allin.OrderMaster.Where(x => x.DealerCode == id && x.EntryDate >= fromDate && x.EntryDate <= toDate).ToListAsync();
             }
-            string shippedDate;
-            string jobNumber;
+            Nullable<DateTime> shippedDate;
+            WipMaster wipMaster;
             string status;
-            foreach (var item in sorMaster)
+            foreach (var item in sorMasters)
             {
-                shippedDate = "N/A";
+                shippedDate = null;
                 status = "N/A";
-                switch (item.OrderStatus)
+                wipMaster = await _syspro.WipMaster.Where(x => x.SalesOrder == item.SalesOrder).OrderBy(y => y.JobStartDate).FirstOrDefaultAsync();
+                if (wipMaster != null)
                 {
-                    case "9":
-                        status = "SHIPPED";
-                        break;
-                    case "*":
-                    case "\\":
-                        status = "CANCELED";
-                        break;
-                    default:
-                        status = "IN PRODUCTION";
-                        break;
-                }
-                jobNumber = await _syspro.WipMaster.Where(x => x.SalesOrder == item.SalesOrder).Select(y => y.Job).FirstOrDefaultAsync();
-                if (!string.IsNullOrWhiteSpace(jobNumber))
-                {
-                    ShipDetails shipDetails = await _piecerate.ShipDetails.Where(x => x.JobNumber == jobNumber).FirstOrDefaultAsync();
+                    ShipDetails shipDetails = await _piecerate.ShipDetails.Where(x => x.JobNumber == wipMaster.Job).FirstOrDefaultAsync();
                     if (shipDetails != null)
                     {
                         ShipMaster shipMaster = await _piecerate.ShipMaster.Where(x => x.DocumentId == shipDetails.DocumentId && x.Status == 2).FirstOrDefaultAsync();
                         if (shipMaster != null)
                         {
-                            shippedDate = shipMaster.DateStamp.Value.ToShortDateString();
+                            shippedDate = shipMaster.DateStamp;
                         }
                     }
+                    else
+                    {
+                        if (DateTime.Now > wipMaster.JobDeliveryDate.Value)
+                            shippedDate = wipMaster.JobDeliveryDate.Value;
+                    }
                 }
+                switch (item.OrderStatus)
+                {
+                    case "9":
+                        status = shippedDate == null ? "READY TO SHIP" : "SHIPPED";
+                        break;
+                    case "*":
+                    case "\\":
+                        status = "CANCELED";
+                        shippedDate = null;
+                        break;
+                    default:
+                        status = "IN PRODUCTION";
+                        shippedDate = null;
+                        break;
+                }
+                orderMaster = orderMasters != null ? orderMasters.Where(x => x.CustomerPo == item.CustomerPoNumber).FirstOrDefault() : null;
                 orderSearch.SearchDetails.Add(new SearchDetail()
                 {
                     OrderNumber = Convert.ToInt32(item.SalesOrder).ToString(),
                     CustomerPo = item.CustomerPoNumber,
-                    ReceivedDate = item.OrderDate.HasValue ? item.OrderDate.Value.ToShortDateString() : "",
+                    ReceivedDate = orderMaster != null ? orderMaster.EntryDate : item.EntrySystemDate,
                     ShippedDate = shippedDate,
-                    Status = shippedDate == "N/A" ? status : "SHIPPED"
+                    Status = status
                 });
             }
+            foreach (var item in orderMasters)
+            {
+                if (orderSearch.SearchDetails.Where(x => x.CustomerPo == item.CustomerPo).FirstOrDefault() == null)
+                {
+                    orderSearch.SearchDetails.Add(new SearchDetail()
+                    {
+                        OrderNumber = "N/A",
+                        CustomerPo = item.CustomerPo,
+                        ReceivedDate = orderMaster.EntryDate,
+                        ShippedDate = null,
+                        Status = "IN ORDER ENTRY"
+                    });
+                }
+            }
+            orderSearch.SearchDetails = orderSearch.SearchDetails.OrderByDescending(x => x.ReceivedDate).ToList();
             return orderSearch;
         }
     }
