@@ -118,6 +118,7 @@ namespace DealerPortalAPI.Models
         public string LibraryCode { get; set; }
         public byte[] TimeStamp { get; set; }
 
+        public virtual ArCustomer CustomerNavigation { get; set; }
         public virtual SorDetail SalesOrder1 { get; set; }
         public virtual SorMaster SalesOrderNavigation { get; set; }
         public virtual ICollection<SorMaster> SorMaster { get; set; }

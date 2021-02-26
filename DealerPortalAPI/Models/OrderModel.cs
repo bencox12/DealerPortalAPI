@@ -21,9 +21,11 @@ namespace DealerPortal.Models
         public string TrackingNumber { get; set; }
         public List<string> AllInStatuses { get; set; }
         public string Status { get; set; }
+        public string Carrier { get; set; }
         public OrderSearch OrderSearch { get; set; }
         public string Message { get; set; }
         public string ApiUrl { get; set; }
+        public string ShipUrl { get; set; }
     }
 
     public partial class OrderSearch
@@ -43,5 +45,7 @@ namespace DealerPortal.Models
         public Nullable<DateTime> ReceivedDate { get; set; }
         public Nullable<DateTime> ShippedDate { get; set; }
         public string Status { get; set; }
+        public string SalesOrders { get; set; }
+        public string Invoices { get; set; }
     }
 }

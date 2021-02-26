@@ -15,13 +15,825 @@ namespace DealerPortalAPI.Models
         {
         }
 
+        public virtual DbSet<ArCustomer> ArCustomer { get; set; }
+        public virtual DbSet<ArCustomer1> ArCustomer1 { get; set; }
         public virtual DbSet<ArInvoice> ArInvoice { get; set; }
+        public virtual DbSet<ArMasterSub> ArMasterSub { get; set; }
+        public virtual DbSet<ArMultAddress> ArMultAddress { get; set; }
+        public virtual DbSet<ArMultAddress1> ArMultAddress1 { get; set; }
+        public virtual DbSet<SalSalesperson> SalSalesperson { get; set; }
         public virtual DbSet<SorDetail> SorDetail { get; set; }
         public virtual DbSet<SorMaster> SorMaster { get; set; }
         public virtual DbSet<WipMaster> WipMaster { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ArCustomer>(entity =>
+            {
+                entity.HasKey(e => e.Customer)
+                    .HasName("ArCustomerKey");
+
+                entity.HasIndex(e => new { e.Area, e.Customer })
+                    .HasName("ArCustomerIdxArea")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.Branch, e.Customer })
+                    .HasName("ArCustomerIdxBranch")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.CustomerClass, e.Customer })
+                    .HasName("ArCustomerIdxClass")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.EdiSenderCode, e.Customer })
+                    .HasName("ArCustomerIdxEdi")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.Name, e.Customer })
+                    .HasName("ArCustomerIdxFullname")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.Salesperson, e.Customer })
+                    .HasName("ArCustomerIdxSlsp")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.ShortName, e.Customer })
+                    .HasName("ArCustomerIdxName")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.Telephone, e.Customer })
+                    .HasName("ArCustomerIdxPhone")
+                    .IsUnique();
+
+                entity.Property(e => e.Customer)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AddTelephone)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AltMethodFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ApplyLineDisc)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ApplyOrdDisc)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ArStatementNo)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Area)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BackOrdReqd)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.BalanceType)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Branch)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BuyingGroup1)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BuyingGroup2)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BuyingGroup3)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BuyingGroup4)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BuyingGroup5)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.City1)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CompanyTaxNumber)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Contact)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ContractPrcReqd)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CounterSlsOnly)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CountyZip)
+                    .IsRequired()
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CountyZip1)
+                    .IsRequired()
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CrNotesAllowed)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CreditCheckFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CreditLimit).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.CreditStatus)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Currency)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CustomerClass)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CustomerOnHold)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CustomerType)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DateCustAdded).HasColumnType("datetime");
+
+                entity.Property(e => e.DateLastPay).HasColumnType("datetime");
+
+                entity.Property(e => e.DateLastSale).HasColumnType("datetime");
+
+                entity.Property(e => e.DefaultOrdType)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DeliveryTerms)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DeliveryTermsC)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DetailMoveReqd)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DocFax)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocFaxContact)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrNotesAllowed)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.EdiFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.EdiSenderCode)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ExemptFinChg)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Fax)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FaxInvoices)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.FaxQuotes)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.FaxStatements)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.GstExemptFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.GstExemptNum)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GstLevel)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.HighInv)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HighInvDays).HasColumnType("decimal(4, 0)");
+
+                entity.Property(e => e.HighestBalance).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.IbtCustomer)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InterfaceFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InvCommentCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvDiscCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceCount).HasColumnType("decimal(10, 0)");
+
+                entity.Property(e => e.LanguageCode)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.LineDiscCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MaintHistory)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.MaintLastPrcPaid)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.MasterAccount)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MinimumOrderChgCod)
+                    .IsRequired()
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MinimumOrderValue).HasColumnType("decimal(10, 0)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nationality)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.NumOutstOrd).HasColumnType("decimal(10, 0)");
+
+                entity.Property(e => e.OutstOrdVal).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.PaymentStatus)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PaymentsAllowed)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PoNumberMandatory)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PriceCategoryTable)
+                    .IsRequired()
+                    .HasMaxLength(260)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PriceCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PrtMasterAdd)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.QueryAllowed)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.QuotesAllowed)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.RelOrdOsValue).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.RouteCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RouteDistance).HasColumnType("decimal(4, 0)");
+
+                entity.Property(e => e.SalesAllowed)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SalesWarehouse)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salesperson)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salesperson1)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salesperson2)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salesperson3)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipPostalCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr1)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr2)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr3)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr3Loc)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr4)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr5)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToGpsLat).HasColumnType("decimal(8, 6)");
+
+                entity.Property(e => e.ShipToGpsLong).HasColumnType("decimal(9, 6)");
+
+                entity.Property(e => e.ShippingInstrs)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShippingInstrsCod)
+                    .IsRequired()
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShippingLocation)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShortName)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoDefaultDoc)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SoDefaultType)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SoldPostalCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoldToAddr1)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoldToAddr2)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoldToAddr3)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoldToAddr3Loc)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoldToAddr4)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoldToAddr5)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SoldToGpsLat).HasColumnType("decimal(8, 6)");
+
+                entity.Property(e => e.SoldToGpsLong).HasColumnType("decimal(9, 6)");
+
+                entity.Property(e => e.SpecialInstrs)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.State1)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.StateCode)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.StatementReqd)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.StockInterchange)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.StoreNumber)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TaxExemptNumber)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TaxStatus)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Telephone)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TelephoneExtn)
+                    .IsRequired()
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Telex)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TermsCode)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TimeStamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.Property(e => e.TpmCreditCheck)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TpmCustomerFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TpmPricingFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TransactionNature).HasColumnType("decimal(3, 0)");
+
+                entity.Property(e => e.TransactionNatureC).HasColumnType("decimal(3, 0)");
+
+                entity.Property(e => e.UkCurrency)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UkVatFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UnappPayAllowed)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UserField1)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserField2).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.WholeOrderShipFlag)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.SalSalesperson)
+                    .WithMany(p => p.ArCustomerSalSalesperson)
+                    .HasForeignKey(d => new { d.Branch, d.Salesperson })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArCustomer_SalSalesperson");
+
+                entity.HasOne(d => d.SalSalespersonNavigation)
+                    .WithMany(p => p.ArCustomerSalSalespersonNavigation)
+                    .HasForeignKey(d => new { d.Branch, d.Salesperson1 })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArCustomer_SalSalesperson_1");
+
+                entity.HasOne(d => d.SalSalesperson1)
+                    .WithMany(p => p.ArCustomerSalSalesperson1)
+                    .HasForeignKey(d => new { d.Branch, d.Salesperson2 })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArCustomer_SalSalesperson_2");
+
+                entity.HasOne(d => d.SalSalesperson2)
+                    .WithMany(p => p.ArCustomerSalSalesperson2)
+                    .HasForeignKey(d => new { d.Branch, d.Salesperson3 })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArCustomer_SalSalesperson_3");
+            });
+
+            modelBuilder.Entity<ArCustomer1>(entity =>
+            {
+                entity.HasKey(e => e.Customer)
+                    .HasName("ArCustomer+Key");
+
+                entity.ToTable("ArCustomer+");
+
+                entity.Property(e => e.Customer)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AttentionTo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comments)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CustomerLine3)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CustomerNameLine2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Dlevel)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Dunsnumber)
+                    .HasColumnName("DUNSNumber")
+                    .HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.EffectiveDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FromDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Insurable)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToPhone)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShippingAttTo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TimeStamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.Property(e => e.ToDate).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<ArInvoice>(entity =>
             {
                 entity.HasKey(e => new { e.Customer, e.Invoice, e.DocumentType })
@@ -216,11 +1028,295 @@ namespace DealerPortalAPI.Models
 
                 entity.Property(e => e.YearInvBalZero).HasColumnType("decimal(4, 0)");
 
+                entity.HasOne(d => d.CustomerNavigation)
+                    .WithMany(p => p.ArInvoice)
+                    .HasForeignKey(d => d.Customer)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArInvoice_ArCustomer");
+
                 entity.HasOne(d => d.SalesOrderNavigation)
                     .WithMany(p => p.ArInvoice)
                     .HasForeignKey(d => d.SalesOrder)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Syspro_FK_ArInvoice_SorMaster");
+
+                entity.HasOne(d => d.SalSalesperson)
+                    .WithMany(p => p.ArInvoice)
+                    .HasForeignKey(d => new { d.Branch, d.Salesperson })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArInvoice_SalSalesperson");
+            });
+
+            modelBuilder.Entity<ArMasterSub>(entity =>
+            {
+                entity.HasKey(e => new { e.Customer, e.CustomerSub })
+                    .HasName("ArMasterSubKey");
+
+                entity.Property(e => e.Customer)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CustomerSub)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TimeStamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.HasOne(d => d.CustomerNavigation)
+                    .WithMany(p => p.ArMasterSub)
+                    .HasForeignKey(d => d.Customer)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArMasterSub_ArCustomer");
+            });
+
+            modelBuilder.Entity<ArMultAddress>(entity =>
+            {
+                entity.HasKey(e => new { e.Customer, e.AddrCode })
+                    .HasName("ArMultAddressKey");
+
+                entity.Property(e => e.Customer)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AddrCode)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Area)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CountyZip)
+                    .IsRequired()
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DeliveryTerms)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.GeographicArea)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LanguageCode)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Nationality)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.RouteCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RouteDistance).HasColumnType("decimal(4, 0)");
+
+                entity.Property(e => e.ShipPostalCode)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr1)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr2)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr3)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr3Loc)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr4)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToAddr5)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToGpsLat).HasColumnType("decimal(8, 6)");
+
+                entity.Property(e => e.ShipToGpsLong).HasColumnType("decimal(9, 6)");
+
+                entity.Property(e => e.ShipToName)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShippingLocation)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TaxRegnNum)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TimeStamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.HasOne(d => d.CustomerNavigation)
+                    .WithMany(p => p.ArMultAddress)
+                    .HasForeignKey(d => d.Customer)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_ArMultAddress_ArCustomer");
+            });
+
+            modelBuilder.Entity<ArMultAddress1>(entity =>
+            {
+                entity.HasKey(e => new { e.Customer, e.AddrCode })
+                    .HasName("ArMultAddress+Key");
+
+                entity.ToTable("ArMultAddress+");
+
+                entity.Property(e => e.Customer)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AddrCode)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.MultiPhoneNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToName2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShippingAttentionT)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TimeStamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+            });
+
+            modelBuilder.Entity<SalSalesperson>(entity =>
+            {
+                entity.HasKey(e => new { e.Branch, e.Salesperson })
+                    .HasName("SalSalespersonKey");
+
+                entity.Property(e => e.Branch)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salesperson)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CommissionPct).HasColumnType("decimal(4, 2)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SalesActual1).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual10).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual11).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual12).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual13).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual2).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual3).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual4).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual5).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual6).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual7).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual8).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesActual9).HasColumnType("decimal(14, 2)");
+
+                entity.Property(e => e.SalesBudget1).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget10).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget11).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget12).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget13).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget2).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget3).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget4).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget5).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget6).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget7).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget8).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalesBudget9).HasColumnType("decimal(12, 0)");
+
+                entity.Property(e => e.SalespersonColl)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TimeStamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
             });
 
             modelBuilder.Entity<SorDetail>(entity =>
@@ -1577,11 +2673,23 @@ namespace DealerPortalAPI.Models
                     .IsUnicode(false)
                     .IsFixedLength();
 
+                entity.HasOne(d => d.CustomerNavigation)
+                    .WithMany(p => p.SorMaster)
+                    .HasForeignKey(d => d.Customer)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_SorMaster_ArCustomer");
+
                 entity.HasOne(d => d.JobNavigation)
                     .WithMany(p => p.SorMaster)
                     .HasForeignKey(d => d.Job)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Syspro_FK_SorMaster_WipMaster");
+
+                entity.HasOne(d => d.SalSalesperson)
+                    .WithMany(p => p.SorMaster)
+                    .HasForeignKey(d => new { d.Branch, d.Salesperson })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_SorMaster_SalSalesperson");
             });
 
             modelBuilder.Entity<WipMaster>(entity =>
@@ -2009,6 +3117,12 @@ namespace DealerPortalAPI.Models
                     .IsRequired()
                     .HasMaxLength(35)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.CustomerNavigation)
+                    .WithMany(p => p.WipMaster)
+                    .HasForeignKey(d => d.Customer)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Syspro_FK_WipMaster_ArCustomer");
 
                 entity.HasOne(d => d.SalesOrderNavigation)
                     .WithMany(p => p.WipMaster)

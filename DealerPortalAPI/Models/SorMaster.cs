@@ -136,7 +136,9 @@ namespace DealerPortalAPI.Models
         public string IncludeInMrp { get; set; }
         public byte[] TimeStamp { get; set; }
 
+        public virtual ArCustomer CustomerNavigation { get; set; }
         public virtual WipMaster JobNavigation { get; set; }
+        public virtual SalSalesperson SalSalesperson { get; set; }
         public virtual ICollection<ArInvoice> ArInvoice { get; set; }
         public virtual ICollection<SorDetail> SorDetail { get; set; }
         public virtual ICollection<WipMaster> WipMaster { get; set; }

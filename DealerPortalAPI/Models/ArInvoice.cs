@@ -52,6 +52,8 @@ namespace DealerPortalAPI.Models
         public decimal OrigInvRate { get; set; }
         public byte[] TimeStamp { get; set; }
 
+        public virtual ArCustomer CustomerNavigation { get; set; }
+        public virtual SalSalesperson SalSalesperson { get; set; }
         public virtual SorMaster SalesOrderNavigation { get; set; }
     }
 }

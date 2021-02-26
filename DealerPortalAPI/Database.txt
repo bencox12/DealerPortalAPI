@@ -1,4 +1,6 @@
 ﻿Scaffold-DbContext "Server=allfs800;Database=DealerPortal;UID=appsrvtest;PWD=Nagasaki10!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Force
 Scaffold-DbContext "Server=allfs800;Database=AllInNew;UID=appsrvtest;PWD=Nagasaki10!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables OrderMaster,OrderStatus -Force
-Scaffold-DbContext "Server=allrs;Database=Labels;UID=appsrvprod;PWD=Fukiyama20!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables ShipMaster,ShipDetails -Force
-Scaffold-DbContext "Server=ALLFSSYSPRO;Database=SysproCompanyA;UID=appsrvread;PWD=Fatman30!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables SorMaster,SorDetail,WipMaster,ArInvoice -Force
+Scaffold-DbContext "Server=allrs;Database=Labels;UID=appsrvprod;PWD=Fukiyama20!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables LabPackDetailA,OperPacking,ShipMaster,ShipDetails -Force
+Scaffold-DbContext "Server=allfssyspro;Database=ReportMaster;UID=appsrvread;PWD=Fatman30!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables CustomRepMaster,CustomInsideSalesRep,CustomTerritoryMaster,CustomRegionMaster,CustomTerritoryMgrMaster,CustomRSDMaster,CustomBranchMaster -Force
+Scaffold-DbContext "Server=allfssyspro;Database=SysproCompanyA;UID=appsrvread;PWD=Fatman30!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Tables ArCustomer,ArCustomer+,ArMultAddress,ArMultAddress+,ArMasterSub,SalSalesperson,SorMaster,SorDetail,WipMaster,ArInvoice -Force
+Scaffold-DbContext "Server=allrs;Database=docimaging;UID=AppsrvProd;PWD=Fukiyama20!;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Force
