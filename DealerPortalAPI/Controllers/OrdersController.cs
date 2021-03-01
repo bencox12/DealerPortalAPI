@@ -227,6 +227,7 @@ namespace DealerPortalAPI.Controllers
             string salesorder;
             string salesorders;
             string invoices;
+            List<string> invoiceList;
             foreach (var item in sorMasters)
             {
                 shippedDate = null;
@@ -284,7 +285,8 @@ namespace DealerPortalAPI.Controllers
                 orderMaster = orderMasters != null ? orderMasters.Where(x => x.CustomerPo == item.CustomerPoNumber).FirstOrDefault() : null;
                 salesorder = Convert.ToInt32(item.SalesOrder).ToString();
                 salesorders = _docs.PdfInfo.Where(x => x.KeyName == salesorder && x.Type == "SalesOrder").FirstOrDefault() != null ? "yes" : "";
-                invoices = _syspro.ArInvoice.Where(x => x.SalesOrder == salesorder.PadLeft(15, '0')).FirstOrDefault() != null ? "yes" : "";
+                invoiceList = _syspro.ArInvoice.Where(x => x.SalesOrder == item.SalesOrder).Select(y => Convert.ToInt32(y.Invoice).ToString()).ToList();
+                invoices = _docs.PdfInfo.Where(x => invoiceList.Contains(x.KeyName) && x.Type == "Invoice").ToList().Count > 0 ? "yes" : "";
                 orderSearch.SearchDetails.Add(new SearchDetail()
                 {
                     OrderNumber = salesorder,
